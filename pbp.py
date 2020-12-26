@@ -1,50 +1,105 @@
 #!/usr/bin/python3
-#from gpiozero import LED, Button
+from gpiozero import LED, Button
 from time import sleep
 import argparse
-
-#georgcenter_power = LED(17)
-#georgcenter_reset = LED(27)
-#georgcenter_on = Button(16)
-
-#voldbymc_power = LED(26)
-#voldbymc_reset = LED(13)
-#voldbymc_on = Button(12)
 
 ## Set classes
 
 # Class to control IO og pins:
 class pins:
+    georgcenter_power = LED(17)
+    georgcenter_reset = LED(27)
+    georgcenter_status = Button(16)
+
+    voldbymc_power = LED(26)
+    voldbymc_reset = LED(13)
+    voldbymc_status = Button(12)
     
     # Method to check status (of either one or both servers)
     def check(s):
         if s == 0:
             print("Checks the status of georgcenter")
-            
+            if pins.georgcenter_status.is_pressed:
+                print("Georgcenter is ON")
+            elif not pins.georgcenter_status.is_pressed:
+                print("Georgcenter is OFF")
             
         elif s == 1:
             print("Checks the status of voldby_mc")
+            if pins.voldbymc_status.is_pressed:
+                print("Georgcenter is ON")
+            elif not pins.voldbymc_status.is_pressed:
+                print("Georgcenter is OFF")
     
     # Method to force a reset/reboot of a specific server
     def reset(s):
         if s == 0:
-            print("resets georgcenter")
+            print("Resetting Georgcenter")
+            pins.georgcenter_power.on()
+            sleep(5)
+            pins.georgcenter_power.off()
+            sleep(2)
+            pins.georgcenter_power.on()
+            sleep(1)
+            if pins.georgcenter_status.is_pressed:
+                print("Georgcenter is on again. Wait for it to boot.")
+            elif not pins.georgcenter_status.is_pressed:
+                print("Georgcenter is not on yet. There might be a problem..")
         elif s == 1:
-            print("Resets voldby_mc")
+            print("Resetting Voldby_mc")
+            pins.voldbymc_power.on()
+            sleep(5)
+            pins.voldbymc_power.off()
+            sleep(1)
+            pins.voldbymc_power.on()
+            sleep(2)
+            if pins.voldbymc_status.is_pressed:
+                print("Voldby_cm is on again. Wait for it to boot.")
+            elif not pins.voldbymc_status.is_pressed:
+                print("Voldby_cm is not on yet. There might be a problem..")
     
     # Method to force a shutdown of a server
     def shutdown(s):
         if s == 0:
-            print("Force a shut down of georgcenter")
+            print("Force a shut down of Georgcenter")
+            pins.georgcenter_power.on()
+            sleep(5)
+            pins.georgcenter_power.off()
+            sleep(1)
+            if pins.georgcenter_status.is_pressed:
+                print("Voldby_cm is still on. There might be a problem here")
+            elif not pins.georgcenter_status.is_pressed:
+                print("Voldby_cm is shut down.")
         elif s == 1:
-            print("Force a shut down of voldby_mc")
+            print("Force a shut down of Voldby_mc")
+            pins.voldbymc_power.on()
+            sleep(5)
+            pins.voldbymc_power.off()
+            sleep(1)
+            if pins.voldbymc_status.is_pressed:
+                print("Voldby_cm is still on. There might be a problem here")
+            elif not pins.voldbymc_status.is_pressed:
+                print("Voldby_cm is shut down.")
+            
         
     # Method to turn on a specific server
     def turn_on(s):
         if s == 0:
             print("Turns on georgcenter")
+            pins.georgcenter_power.on()
+            sleep(1)
+            if pins.georgcenter_status.is_pressed:
+                print("Georgcenter is on again. Wait for it to boot.")
+            elif not pins.georgcenter_status.is_pressed:
+                print("Georgcenter is not on yet. There might be a problem..")
         elif s == 1:
             print("Turns on voldby_mc")
+            pins.voldbymc_power.on()
+            sleep(2)
+            if pins.voldbymc_status.is_pressed:
+                print("Voldby_cm is on again. Wait for it to boot.")
+            elif not pins.voldbymc_status.is_pressed:
+                print("Voldby_cm is not on yet. There might be a problem..")
         
 # Class to control and confirm parsed input:
 class parse_checker():
