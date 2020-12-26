@@ -8,11 +8,11 @@ import argparse
 # Class to control IO og pins:
 class pins:
     georgcenter_power = LED(17)
-    georgcenter_reset = LED(27)
+    #georgcenter_reset = LED(27)
     georgcenter_status = Button(16)
 
-    voldbymc_power = LED(26)
-    voldbymc_reset = LED(13)
+    voldbymc_power = LED(27)
+    #voldbymc_reset = LED(13)
     voldbymc_status = Button(12)
     
     # Method to check status (of either one or both servers)
@@ -27,9 +27,9 @@ class pins:
         elif s == 1:
             print("Checks the status of voldby_mc")
             if pins.voldbymc_status.is_pressed:
-                print("Georgcenter is ON")
+                print("Voldbymc is ON")
             elif not pins.voldbymc_status.is_pressed:
-                print("Georgcenter is OFF")
+                print("Voldbymc is OFF")
     
     # Method to force a reset/reboot of a specific server
     def reset(s):
